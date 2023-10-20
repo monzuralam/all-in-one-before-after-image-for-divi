@@ -16,29 +16,52 @@ class AIOBAI_BeforeAfterImage extends ET_Builder_Module {
 
     public function init() {
         $this->name = esc_html__('All-in-one Before After Image', 'aiobai-all-in-one-before-after-image-for-divi');
+
+        $this->settings_modal_toggles = array(
+            'general' => array(
+                'toggles' => array(
+                    'main_content' => array(
+                        'title' => esc_html__('Images', 'aiobai-all-in-one-before-after-image-for-divi'),
+                    ),
+                    'aiobai_settings' => esc_html__('Settings', 'aiobai-all-in-one-before-after-image-for-divi'),
+                )
+            )
+        );
     }
 
-    public function get_fields() {
-        return array(
-            'before_image' => array(
-                'label'                 =>      esc_html__('Before Image', 'aiobai-all-in-one-before-after-image-for-divi'),
+    private function aiobai_get_image_fields($image_type) {
+        $label = ucfirst($image_type);
+        $fields = array(
+            "{$image_type}_image" => array(
+                'label'                 =>      esc_html__("{$label} image", 'aiobai-all-in-one-before-after-image-for-divi'),
                 'type'                  =>      'upload',
                 'option_category'       =>      'basic_option',
-                'upload_button_text'    =>      esc_attr__('Upload Before Image', 'aiobai-all-in-one-before-after-image-for-divi'),
+                'upload_button_text'    =>      esc_attr__("Upload {$label} image", 'aiobai-all-in-one-before-after-image-for-divi'),
                 'choose_text'           =>      esc_attr__('Choose a image', 'aiobai-all-in-one-before-after-image-for-divi'),
                 'update_text'           =>      esc_attr__('Set As Image', 'aiobai-all-in-one-before-after-image-for-divi'),
+                'tab_slug'              =>      'general',
                 'toggle_slug'           =>      'main_content'
             ),
-            'after_image' => array(
-                'label'                 =>      esc_html__('After Image', 'aiobai-all-in-one-before-after-image-for-divi'),
-                'type'                  =>      'upload',
+            "{$image_type}_alt_text"    => array(
+                "label" => esc_html__("{$label} Alt Text", "aiobai-all-in-one-before-after-image-for-divi"),
+                'type'                  =>      'text',
                 'option_category'       =>      'basic_option',
-                'upload_button_text'    =>      esc_attr__('Upload Before Image', 'aiobai-all-in-one-before-after-image-for-divi'),
-                'choose_text'           =>      esc_attr__('Choose a image', 'aiobai-all-in-one-before-after-image-for-divi'),
-                'update_text'           =>      esc_attr__('Set As Image', 'aiobai-all-in-one-before-after-image-for-divi'),
+                'tab_slug'              =>      'general',
                 'toggle_slug'           =>      'main_content'
             )
         );
+
+        return $fields;
+    }
+
+    public function get_fields() {
+
+        $image_fields = array_merge(
+            $this->aiobai_get_image_fields('before'),
+            $this->aiobai_get_image_fields('after'),
+        );
+
+        return $image_fields;
     }
 
     public function render_before_after_image() {
@@ -46,13 +69,19 @@ class AIOBAI_BeforeAfterImage extends ET_Builder_Module {
 
         $before_image           = !empty($this->props['before_image']) ? $this->props['before_image'] : $placeholder;
         $after_image            = !empty($this->props['after_image']) ? $this->props['after_image'] : $placeholder;
+        $before_img_id = attachment_url_to_postid($this->props['before_image']);
+        $after_img_id = attachment_url_to_postid($this->props['after_image']);
+        $before_image_alt_text = !empty($this->props['before_alt_text']) ? $this->props['before_alt_text'] : get_post_meta($before_img_id, '_wp_attachment_image_alt', true);
+        $after_image_alt_text = !empty($this->props['after_alt_text']) ? $this->props['after_alt_text'] : get_post_meta($after_img_id, '_wp_attachment_image_alt', true);
         return sprintf(
             '<div class="aiobai-image">
-                <img src="%1$s" class="img-responsive" alt="" />
-                <img src="%2$s" class="img-responsive" alt="" />
+                <img src="%1$s" class="img-responsive" alt="%2$s" />
+                <img src="%3$s" class="img-responsive" alt="%4$s" />
             </div>',
             $before_image,
-            $after_image
+            $before_image_alt_text,
+            $after_image,
+            $after_image_alt_text
         );
     }
 
