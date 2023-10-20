@@ -54,6 +54,21 @@ class AIOBAI_BeforeAfterImage extends ET_Builder_Module {
         return $fields;
     }
 
+    private function aiobai_get_settings_fields($settings_fields) {
+        $label = ucfirst($settings_fields);
+        $fields = array(
+            "{$settings_fields}_label_text"    => array(
+                "label"                 => esc_html__("{$label} Label Text", "aiobai-all-in-one-before-after-image-for-divi"),
+                'type'                  =>      'text',
+                'option_category'       =>      'basic_option',
+                'tab_slug'              =>      'general',
+                'toggle_slug'           =>      'aiobai_settings'
+            )
+        );
+
+        return $fields;
+    }
+
     public function get_fields() {
 
         $image_fields = array_merge(
@@ -61,7 +76,12 @@ class AIOBAI_BeforeAfterImage extends ET_Builder_Module {
             $this->aiobai_get_image_fields('after'),
         );
 
-        return $image_fields;
+        $settings = array_merge(
+            $this->aiobai_get_settings_fields('before'),
+            $this->aiobai_get_settings_fields('after'),
+        );
+
+        return array_merge($image_fields, $settings);
     }
 
     public function render_before_after_image() {
@@ -74,7 +94,7 @@ class AIOBAI_BeforeAfterImage extends ET_Builder_Module {
         $before_image_alt_text = !empty($this->props['before_alt_text']) ? $this->props['before_alt_text'] : get_post_meta($before_img_id, '_wp_attachment_image_alt', true);
         $after_image_alt_text = !empty($this->props['after_alt_text']) ? $this->props['after_alt_text'] : get_post_meta($after_img_id, '_wp_attachment_image_alt', true);
         return sprintf(
-            '<div class="aiobai-image">
+            '<div class="aiobai-init" id="aiobai-init">
                 <img src="%1$s" class="img-responsive" alt="%2$s" />
                 <img src="%3$s" class="img-responsive" alt="%4$s" />
             </div>',
@@ -86,6 +106,11 @@ class AIOBAI_BeforeAfterImage extends ET_Builder_Module {
     }
 
     public function render($attrs, $content = null, $render_slug) {
+        wp_enqueue_style('aiobai-twentytwenty');
+        wp_enqueue_script('aiobai-event-move');
+        wp_enqueue_script('aiobai-twenty');
+        wp_enqueue_script('aiobai-main');
+
         return sprintf('<div class="aiobai-wrapper">%1$s</div>', $this->render_before_after_image());
     }
 }
