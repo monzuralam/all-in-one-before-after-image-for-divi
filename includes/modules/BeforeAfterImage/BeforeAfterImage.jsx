@@ -38,7 +38,7 @@ class BeforeAfterImage extends Component {
       after_image = props.after_image ? props.after_image : PlaceHolderImage;
 
     return (
-      <div className="aiobai-image" id="aiobai-init">
+      <div className="aiobai-image twentytwenty-container">
         <img src={before_image} alt="aiobai" />
         <img src={after_image} alt="aiobai" />
       </div>

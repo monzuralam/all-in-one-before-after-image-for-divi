@@ -94,7 +94,7 @@ class AIOBAI_BeforeAfterImage extends ET_Builder_Module {
         $before_image_alt_text = !empty($this->props['before_alt_text']) ? $this->props['before_alt_text'] : get_post_meta($before_img_id, '_wp_attachment_image_alt', true);
         $after_image_alt_text = !empty($this->props['after_alt_text']) ? $this->props['after_alt_text'] : get_post_meta($after_img_id, '_wp_attachment_image_alt', true);
         return sprintf(
-            '<div class="aiobai-init" id="aiobai-init">
+            '<div class="aiobai-init twentytwenty-container">
                 <img src="%1$s" class="img-responsive" alt="%2$s" />
                 <img src="%3$s" class="img-responsive" alt="%4$s" />
             </div>',

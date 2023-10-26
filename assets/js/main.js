@@ -1,3 +1,3 @@
 jQuery(document).ready(function ($) {
-    $("#aiobai-init").twentytwenty();
+    $(".twentytwenty-container").twentytwenty();
 });
